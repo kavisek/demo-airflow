@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import airflow
 import datetime as dt
 from builtins import range
@@ -24,7 +10,7 @@ from airflow.models import DAG
 default_args = {
     'owner': 'kavi sekhon',
     'depends_on_past': False,
-    'start_date': dt.datetime(2018, 9, 20),
+    'start_date': dt.datetime(2019, 10, 20),
     'email': ['kavi.skhon@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': True,
@@ -33,7 +19,7 @@ default_args = {
 }
 
 dag = DAG(
-    dag_id='update_website_content', default_args=default_args,
+    dag_id='kavi_update_blog', default_args=default_args,
     schedule_interval='00 10 * * *',
     dagrun_timeout=dt.timedelta(minutes=60*7))
 
