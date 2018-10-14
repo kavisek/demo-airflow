@@ -1,4 +1,4 @@
-# Airflow-DAGs
+# Automating Workflows with Airflow
 
 Apache Airflow is a like a crontab on steroids. Its a pipeline framework that can be used for ETL processing and model training if your are dealing with very large complex setups. The framework allows you to run multiple jobs across different workers. I have a simple implementation of Airflow running on my local machine. If you want to set up an instance on your local machine use the small tutorial found below
 
