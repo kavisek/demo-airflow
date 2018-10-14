@@ -1,5 +1,3 @@
-import airflow
-from builtins import range
 import datetime as dt
 from airflow.operators.python_operator import PythonOperator
 from airflow.models import DAG
@@ -18,7 +16,7 @@ default_args = {
 dag = DAG(
     dag_id='kavi_update_log',
     default_args=default_args,
-    schedule_interval='* 1 * * *',
+    schedule_interval='00 * * * *',
     dagrun_timeout=dt.timedelta(minutes=15))
 
 
