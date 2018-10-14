@@ -38,7 +38,7 @@ This repo contains some useful DAGs (dynamic acyclic graphs) in Python that I us
 
 ### General Notes
 
-As I learn more through threw my experimentation. I will be adding to these notes below.
+As I learn more through my experimentation. I will be adding to these notes below.
 
 - You can modify Airflow paths and DAG locations in the Airflow config file.
 - If you are running bash script using the Bash Operator place an extra space at the end of the Python script.
