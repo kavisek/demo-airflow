@@ -2,29 +2,29 @@
 
 Apache Airflow is a like a crontab on steroids. Its a pipeline framework that can be used for ETL processing and model training if your are dealing with very large complex setups. The framework allows you to run multiple jobs across different workers. I have a simple implementation of Airflow running on my local machine. If you want to set up an instance on your local machine use the small tutorial found below
 
-This repo contains some useful DAGs (dynamic acyclic graphs) in Python that I use to automate my workflow. Feel free to modify these DAGs to your use cas.
+This repo contains some useful DAGs (dynamic acyclic graphs) in Python that I use to automate my workflow. Feel free to modify these DAGs to your use case.
 
 ### DAG Descriptions
 
-- **train_models.py** - Run notebooks and the model within overnight evernight
-- **update_blog.py** - Run a python script that regenerate the content for the website overnight
+- **train_models.py** - Run notebooks and the model within them overnight every night
+- **update_blog.py** - Run a python script that generates the content for my blog overnight
 - **update_logs.py** - Output a log every hours to makes sure the Airflow Scheduler is working
 
 ### Local Airflow Setup Instructions
 
-1. Create a virtual enviroment using conda.
+1. Create a virtual environment using conda.
 
 `conda create --name airflow`
 
-2. Activate and enter your new virtual enviroment
+2. Activate and enter your new virtual environment
 
 `source activate airflow`
 
-2. Conda Install Airflow into the "airflow" enviroment
+2. Conda Install Airflow into the "airflow" environment
 
 `conda install -c conda-forge airflow`
 
-4. Start the Airflow webserver.
+4. Start the Airflow web server.
 
 `airflow webserver -p 8080`
 
