@@ -36,6 +36,29 @@ This repo contains some useful DAGs (dynamic acyclic graphs) in Python that I us
 
 ![Image](./Images/local_airflow.png)
 
+
+
+### Airflow Command Line
+
+Use this command to set a dag to be completed without running it
+```bash
+airflow run the_pipeline run_task 2019-07-27 -m
+```
+
+Use this command to set a backfill dags to be completed without running it
+```bash
+airflow backfill the_pipeline -s 2019-07-27 -e 2019-07-20 -m  --dry_run
+```
+
+There will be time when I take the airflow scheduler down for testing and updates. When I start dhe scheduler up again I don't want it to start bacfill automatically because I don't ant it pining our API all the time.
+
+Therefore I will use backfill to start populate the database a date range of "marked success fulljob."
+
+```bash
+airflow backfill the_mark_pipeline -s 2019-07-27 -e 2019-07-30 -m --verbose
+```
+
+
 ### General Notes
 
 As I learn more through my experimentation. I will be adding to these notes below.
