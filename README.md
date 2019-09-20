@@ -4,9 +4,30 @@ Apache Airflow is a like a crontab on steroids. Its a pipeline framework that ca
 
 After setting up the docker containers the airflow server will start running some example DAGs with I have written.
 
+### Versions
+
+- Airflow = 1.10.3
+- Postgres Database =  9.6.15
+
 ### Setting up Postgres database
 
-First I will need to start a Postgres server in docker. This will store our meta-database.
+First I will need to start a Postgres server in a docker container on my local machine. This will Postgres container will store our meta-database for our airflow-server.
+
+
+```bash
+# Creating postgres docker container
+docker run -d --name my_postgres -v my_dbdata:/var/lib/postgresql/data -p 54320:5432 postgres:11
+
+
+# Connect to the postgres database
+docker exec -it my_postgres psql -U postgres
+
+# Check the current version of Postgres
+SHOW server_version;
+
+# Disconnect from postgres server
+\q
+```
 
 
 
@@ -14,15 +35,21 @@ First I will need to start a Postgres server in docker. This will store our meta
 
 1. Create a virtual environment using conda.
 
-`conda create --name airflow`
+```
+conda create -n airflow python=3.6
+```
 
 2. Activate and enter your new virtual environment
 
-`source activate airflow`
+```
+source activate airflow
+```
 
-2. Conda Install Airflow into the "airflow" environment
+2. Conda install `pip` and environment
 
-`conda install -c conda-forge airflow`
+```
+conda install -c anaconda pip
+```
 
 4. Start the Airflow web server.
 
@@ -72,3 +99,4 @@ As I learn more through my experimentation. I will be adding to these notes belo
 ### Sources
 
 - [Airflow Documentation](https://airflow.apache.org/)
+- [Postgres Docker Container Setup](https://www.saltycrane.com/blog/2019/01/how-run-postgresql-docker-mac-local-development///)
