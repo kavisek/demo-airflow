@@ -60,7 +60,7 @@ After install the environment, we will populate our meta-database, and start run
 - **Airflow scheduler** - schedule that check for dag and task run a short time interval.
 - **Airflow web server** - interactive user interface to view job progress
 
-I use [conda](https://www.anaconda.com/) as my package manager and virtual environments. Therefore I suggest that you install anaconda, virenv, or pyenv and following along. This tutorial will be using conda
+I use [conda](https://www.anaconda.com/) as my package manager and virtual environments. Therefore I suggest that you install anaconda, virenv, or pyenv and following along. This tutorial will be using conda.
 
 1. Create a virtual environment using conda.
 
