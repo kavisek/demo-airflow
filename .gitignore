@@ -6,11 +6,10 @@
 *.pem
 *.txt
 *.xls
-*.json
 *.jpg
-*.png
 *.pkl
 *.jpeg
+*.json
 *.h5
 *.data
 *.data.gz
@@ -18,7 +17,24 @@
 *.sav
 *.zip
 *.dot
+*.icloud
+*.cfg
+*.xlsx
+*.pyc
+*.pyo
+*.twbx
+*.tar
+*.xlsx
 
-# Hidden Folders
-Logs
-Examples
+
+# Hide Folders
+# Ignore uploading log folders from airflow server to Github
+# since log files can grow larger than 100mb.
+
+logs/
+log/
+Keys/*
+SSL/*
+.ipynb_checkpoints/*
+airflow-webserver.pid
+__pycache__/

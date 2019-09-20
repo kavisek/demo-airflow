@@ -1,14 +1,14 @@
 # Automating Workflows with Airflow
 
-Apache Airflow is a like a crontab on steroids. Its a pipeline framework that can be used for ETL processing and model training if your are dealing with very large complex setups. The framework allows you to run multiple jobs across different workers. I have a simple implementation of Airflow running on my local machine. If you want to set up an instance on your local machine use the small tutorial found below
+Apache Airflow is a like a crontab on steroids. Its a pipeline framework that can be used for ETL processing and model training if your are dealing with very large complex setups. The framework allows you to run multiple jobs across different workers. I have a simple implementation of Airflow running on my local machine with the airflow server and meta database running in docker containers. If you want to set up an instance on your local machine use this small tutorial.
 
-This repo contains some useful DAGs (dynamic acyclic graphs) in Python that I use to automate my workflow. Feel free to modify these DAGs to your use case.
+After setting up the docker containers the airflow server will start running some example DAGs with I have written.
 
-### DAG Descriptions
+### Setting up Postgres database
 
-- **train_models.py** - Run notebooks and the model within them overnight every night
-- **update_blog.py** - Run a python script that generates the content for my blog overnight
-- **update_logs.py** - Output a log every hours to makes sure the Airflow Scheduler is working
+First I will need to start a Postgres server in docker. This will store our meta-database.
+
+
 
 ### Local Airflow Setup Instructions
 
