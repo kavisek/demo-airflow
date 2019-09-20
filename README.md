@@ -51,6 +51,12 @@ source activate airflow
 conda install -c anaconda pip
 ```
 
+5. Install pip requirements
+
+```
+pip install -r requirements.txt
+```
+
 4. Start the Airflow web server.
 
 `airflow webserver -p 8080`
