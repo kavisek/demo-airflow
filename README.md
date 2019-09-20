@@ -1,5 +1,7 @@
 # Automating Workflows with Airflow
 
+![Airflow Diagram](https://www.xenonstack.com/images/insights/xenonstack-what-is-apache-airflow.png)
+
 Apache Airflow is a like a crontab on steroids.
 
 Its a pipeline framework that can be used for ETL processing, training model overnight, or any task that needs to be run at certain frequency. The framework allows you to run multiple jobs across different workers. I have a simple implementation of Airflow running on my local machine with the airflow server using docker containers. Therefore you run this near production example on your local machine using docker container and then migrate to Amazon Web Services or the Google Cloud Platform.
@@ -36,22 +38,29 @@ docker exec -it my_postgres psql -U postgres
 SHOW server_version;
 
 # Create a Airflow
-CREATE DATABASE airflow
+CREATE DATABASE airflow;
+
+# View the databases on the Postgres server/contianer
+\l
 
 # Disconnect from Postgres server
 \q
 ```
 
+At the very end you should get an output like the following. You see our new airflow database on the server. We will not populate it during the airflow setup and use it as a persistent data store for our scheduler.
 
+![Postgres Database Setup](/images/postrgess_databas_setup.png)
 
 ### Virtual Environment & Airflow Installation
 
-Next we going to setup a virtual environment to run airflow.
+Next we are going to setup a virtual environment for our airflow installation.
 
+After install the environment, we will populate our meta-database, and start running the airflow scheduler and airflow web server.
 
-After install the environment, we will populate our meta-database, and start running airflow.
+- **Airflow scheduler** - schedule that check for dag and task run a short time interval.
+- **Airflow web server** - interactive user interface to view job progress
 
-I will be using [conda](https://www.anaconda.com/) to create my varInspector
+I use [conda](https://www.anaconda.com/) as my package manager and virtual environments. Therefore I suggest that you install anaconda, virenv, or pyenv and following along. This tutorial will be using conda
 
 1. Create a virtual environment using conda.
 
@@ -67,7 +76,7 @@ conda create -n airflow python=3.6
 source activate airflow
 ```
 
-3. Install pip requirements
+3. Install our python modules using pip. The requirements file can be found under the requirements folder within this repository
 
 ```bash
 # Install the environment using pip and the requirements.txt file
@@ -103,16 +112,31 @@ airflow webserver -p 8080
 airflow scheduler -p 8080
 ```
 
-6. Visit "http://localhost:8080/admin/" to view the Airflow Dashboard to run your DAGs.
+6. Visit "http://localhost:8080/admin/" to view the Airflow Dashboard to run your DAGs. A user interface like the following should appear in your browser.
 
 ![Image](./Images/local_airflow.png)
 
+### Running Airflow
+
+When you have airflow running it will start executing the airflow DAGs found under the `dags` subdirectory. There are a variety of light weight DAGs in this repository that have designed to uses a variety of airflow feature. I would highly suggest checking the out as Airflow executes.
+
+#### Stopping Docker
+
+Lets say your finished playing around with airflow. You can run the following docker commands to stop and remove your docker containers.
+
+```bash
+# Stop docker containers
+# (docker stop [container_name], docker_rm [container_name)
+docker stop my_postgres
+docker rm my_postgres
+ docker volume rm my_dbdata
+```
 
 
 
 ### <center> More About Airflow <center>
 
-Everything after this section is just bonus airflow content. Items that you don't necessarily need to ge this exmaples working but are cool item to help your understanding.
+Everything after this section is just bonus airflow content. Items that you don't necessarily need to run  this example but information that will helpful in getting out the most from airflow your needs.
 
 ### Airflow Command Line
 
