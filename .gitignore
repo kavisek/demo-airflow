@@ -24,7 +24,7 @@
 *.pyo
 *.twbx
 *.tar
-*.xlsx
+.DS_Store
 
 
 # Hide Folders
