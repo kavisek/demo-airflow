@@ -50,4 +50,4 @@ Kaggle
 Backups
 
 # White List the Requirements folder
-!/Requirements/requirement.txt*
+!/Requirements/*
