@@ -31,6 +31,7 @@
 # Ignore uploading log folders from airflow server to Github
 # since log files can grow larger than 100mb.
 
+<<<<<<< HEAD
 logs/
 log/
 Keys/*
@@ -38,3 +39,13 @@ SSL/*
 .ipynb_checkpoints/*
 airflow-webserver.pid
 __pycache__/
+=======
+# Hidden Folders
+Whitepapers
+Books
+Economics
+FlashCards
+BrainStation
+Kaggle
+Backups
+>>>>>>> 761558b5fa7a1ac0ba817eea190c6053691190ea
