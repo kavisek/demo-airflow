@@ -120,6 +120,28 @@ airflow scheduler -p 8080
 
 When you have airflow running it will start executing the airflow DAGs found under the `dags` subdirectory. There are a variety of light weight DAGs in this repository that have designed to uses a variety of airflow feature. I would highly suggest checking the out as Airflow executes.
 
+### Creating Docker Network
+
+```bash
+# Create a docker network and add the container to the network
+docker network create my_network
+docker network connect my_network my_postgres
+docker network connect my_network test_container
+
+# View network information
+docker network inspect myNetwork
+```
+
+##### Connecting to Postgres Container with Linux Container
+
+```bash
+# Connet to postgress database container via psql
+psql -h 172.18.0.1 -p 54320 -U postgres
+
+# Connet to postgress database container via psql on your local machine
+psql -h localhost -p 54320 -U postgres
+```
+
 #### Stopping Docker
 
 Lets say your finished playing around with airflow. You can run the following docker commands to stop and remove your docker containers.
