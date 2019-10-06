@@ -18,21 +18,19 @@
 *.zip
 *.dot
 *.icloud
-*.cfg
 *.xlsx
 *.pyc
 *.pyo
 *.twbx
 *.tar
 .DS_Store
-
+*.log
 
 # Hide Folders
 # Ignore uploading log folders from airflow server to Github
 # since log files can grow larger than 100mb.
 
-logs/
-log/
+
 Keys/*
 SSL/*
 .ipynb_checkpoints/*
