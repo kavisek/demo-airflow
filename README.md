@@ -119,6 +119,19 @@ airflow scheduler -p 8080
 ### Running Airflow
 
 When you have airflow running it will start executing the airflow DAGs found under the `dags` subdirectory. There are a variety of light weight DAGs in this repository that have designed to uses a variety of airflow feature. I would highly suggest checking the out as Airflow executes.
+### Creating a Docker Airflow Container
+
+```bash
+# Navigate to airflow dircetory
+cd /Users/kavi/repos/airflow
+
+# Creating airflow docker image
+docker build -t airflow_image .
+
+# Creating airflow docker container
+docker run --name airflow_container -it airflow_image  /bin/bash
+```
+
 
 ### Creating Docker Network
 
