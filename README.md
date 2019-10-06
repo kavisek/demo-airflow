@@ -127,9 +127,6 @@ cd /Users/kavi/repos/airflow
 
 # Creating airflow docker image
 docker build -t airflow_image .
-
-# Creating airflow docker container
-docker run --name airflow_container -it airflow_image  /bin/bash
 ```
 
 
@@ -139,13 +136,20 @@ docker run --name airflow_container -it airflow_image  /bin/bash
 # Create a docker network and add the container to the network
 docker network create my_network
 docker network connect my_network my_postgres
-docker network connect my_network test_container
+docker network connect my_network airflow_container
 
 # View network information
-docker network inspect myNetwork
+docker network inspect my_network
 ```
 
-##### Connecting to Postgres Container with Linux Container
+### Running a Docker Container
+
+```bash
+# Creating airflow docker container
+docker run --name airflow_container -it airflow_image  /bin/bash
+```
+
+### Connecting to Postgres Container with Linux Container
 
 ```bash
 # Connet to postgress database container via psql
@@ -164,7 +168,7 @@ Lets say your finished playing around with airflow. You can run the following do
 # (docker stop [container_name], docker_rm [container_name)
 docker stop my_postgres
 docker rm my_postgres
- docker volume rm my_dbdata
+docker volume rm my_dbdata
 ```
 
 
