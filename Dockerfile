@@ -34,7 +34,7 @@ RUN /bin/bash -c "source activate airflow \
   && conda install mysql-connector-c==6.1.6 -y \
   && conda install pandas -y \
   && conda install airflow=1.10.3 -y \
-  && pip install -r requirements/requirements.txt
+  && pip install -r requirements/requirements.txt \
   && conda deactivate"
 
 # Installing Postgres Command Line Client

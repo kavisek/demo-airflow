@@ -22,13 +22,13 @@ dag = DAG(
 
 # The following bash operators run python scritps
 run_cnd_pipeline = BashOperator(task_id='run_cnd_pipeline',
-                                bash_command='python ~/repos/airflow/scripts/refresh_database.py', dag=dag)
+                                bash_command='python ~/scripts/refresh_database.py', dag=dag)
 
 run_usa_pipeline = BashOperator(task_id='run_usa_pipeline',
-                                bash_command='python ~/repos/airflow/scripts/refresh_database.py', dag=dag)
+                                bash_command='python ~/scripts/refresh_database.py', dag=dag)
 
 run_uk_pipeline = BashOperator(task_id='run_uk_pipeline',
-                               bash_command='python ~/repos/airflow/scripts/refresh_database.py',  dag=dag)
+                               bash_command='python ~/scripts/refresh_database.py',  dag=dag)
 
 
 email_notification = BashOperator(task_id='email_notification',
