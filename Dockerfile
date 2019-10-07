@@ -44,6 +44,8 @@ RUN sudo apt-get install postgresql postgresql-contrib -y
 
 # Installting Nano
 RUN sudo apt install nano
+RUN sudo apt-get install screen
+RUN sudo apt-get install lsof
 
 # Setting Airflow Enviroment Variable
 

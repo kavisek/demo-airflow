@@ -16,7 +16,7 @@ default_args = {
 dag = DAG(
     dag_id='update_db_pipeline',
     default_args=default_args,
-    schedule_interval='0 3 * * *',
+    schedule_interval='15 * * * *',
     dagrun_timeout=dt.timedelta(minutes=120),
     catchup=True)
 

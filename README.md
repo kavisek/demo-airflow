@@ -146,8 +146,28 @@ docker network inspect my_network
 
 ```bash
 # Creating airflow docker container
-docker run --name airflow_container -it airflow_image  /bin/bash
+docker run -d -P --name airflow_container -it airflow_image /bin/bash
+
+
 ```
+
+Start the scheduler and webserver into two seperate screens
+
+```bash
+# Start airflow scheduler and webserver in two seperate screens
+source activate airflow
+&& screen -d -m -S scheduler bash -c "airflow scheduler"
+&& screen -d -m -S webserver bash -c "airflow webserver -p 8080"
+```
+
+```bash
+# See the open incoming ports for your docker container
+ docker port airflow_container
+```
+
+Look for the port mapping of port 8080 (i.e. `8080/tcp -> 0.0.0.0:32769`) Take the mapped port number and it to your airflow web server url.
+
+http://localhost:32769/admin/
 
 ### Connecting to Postgres Container with Linux Container
 
