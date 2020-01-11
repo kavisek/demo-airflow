@@ -52,6 +52,90 @@ At the very end you should get an output like the following. You see our new air
 
 ![Postgres Database Setup](/images/postrgess_databas_setup.png)
 
+
+
+### Creating a Docker Airflow Container
+
+```bash
+# Navigate to airflow dircetory
+cd /Users/kavi/repos/airflow
+
+# Creating airflow docker image
+docker build -t airflow_image .
+```
+
+### Run a Docker Container
+
+```bash
+# Creating airflow docker container
+docker run -d -P --name airflow_container -it airflow_image /bin/bash  --restart=always
+```
+
+### Creating Docker Network
+
+```bash
+# Create a docker network and add the container to the network
+docker network create wave_network
+docker network connect wave_network airflow_db
+docker network connect wave_network airflow_container
+
+# View network information
+docker network inspect my_network
+```
+
+### Attach to airflow_container
+
+```bash
+# Attach to the running airflow container
+docker attach airflow_container
+```
+
+### Docker Set up Instructions
+```
+
+Start the scheduler and webserver into two seperate screens
+
+```bash
+# Start airflow scheduler and webserver in two seperate screens
+source activate airflow
+&& screen -d -m -S scheduler bash -c "airflow scheduler"
+&& screen -d -m -S webserver bash -c "airflow webserver -p 8080"
+```
+
+```bash
+# See the open incoming ports for your docker container
+ docker port airflow_container
+```
+
+Look for the port mapping of port 8080 (i.e. `8080/tcp -> 0.0.0.0:32769`) Take the mapped port number and it to your airflow web server url.
+
+http://localhost:32769/admin/
+
+### Build Airflow Image
+
+```bash
+# Connet to postgress database container via psql
+psql -h 172.18.0.1 -p 54320 -U postgres
+
+# Connet to postgress database container via psql on your local machine
+psql -h localhost -p 54320 -U postgres
+```
+
+#### Build Docker Network
+
+Lets say your finished playing around with airflow. You can run the following docker commands to stop and remove your docker containers.
+
+```bash
+# Stop docker containers
+# (docker stop [container_name], docker_rm [container_name)
+docker stop my_postgres
+docker rm my_postgres
+docker volume rm my_dbdata
+```
+
+
+
+
 ### Virtual Environment & Airflow Installation
 
 Next we are going to setup a virtual environment for our airflow installation.
@@ -120,77 +204,7 @@ airflow scheduler -p 8080
 ### Running Airflow
 
 When you have airflow running it will start executing the airflow DAGs found under the `dags` subdirectory. There are a variety of light weight DAGs in this repository that have designed to uses a variety of airflow feature. I would highly suggest checking the out as Airflow executes.
-### Creating a Docker Airflow Container
 
-```bash
-# Navigate to airflow dircetory
-cd /Users/kavi/repos/airflow
-
-# Creating airflow docker image
-docker build -t airflow_image .
-```
-
-
-### Creating Docker Network
-
-```bash
-# Create a docker network and add the container to the network
-docker network create my_network
-docker network connect my_network my_postgres
-docker network connect my_network airflow_container
-
-# View network information
-docker network inspect my_network
-```
-
-### Running a Docker Container
-
-```bash
-# Creating airflow docker container
-docker run -d -P --name airflow_container -it airflow_image /bin/bash
-
-
-```
-
-Start the scheduler and webserver into two seperate screens
-
-```bash
-# Start airflow scheduler and webserver in two seperate screens
-source activate airflow
-&& screen -d -m -S scheduler bash -c "airflow scheduler"
-&& screen -d -m -S webserver bash -c "airflow webserver -p 8080"
-```
-
-```bash
-# See the open incoming ports for your docker container
- docker port airflow_container
-```
-
-Look for the port mapping of port 8080 (i.e. `8080/tcp -> 0.0.0.0:32769`) Take the mapped port number and it to your airflow web server url.
-
-http://localhost:32769/admin/
-
-### Connecting to Postgres Container with Linux Container
-
-```bash
-# Connet to postgress database container via psql
-psql -h 172.18.0.1 -p 54320 -U postgres
-
-# Connet to postgress database container via psql on your local machine
-psql -h localhost -p 54320 -U postgres
-```
-
-#### Stopping Docker
-
-Lets say your finished playing around with airflow. You can run the following docker commands to stop and remove your docker containers.
-
-```bash
-# Stop docker containers
-# (docker stop [container_name], docker_rm [container_name)
-docker stop my_postgres
-docker rm my_postgres
-docker volume rm my_dbdata
-```
 
 
 
