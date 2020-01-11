@@ -53,8 +53,8 @@ At the very end you should get an output like the following. You see our new air
 ![Postgres Database Setup](/images/postrgess_databas_setup.png)
 
 
-
-### Creating a Docker Airflow Container
+<br><br>
+## <center> Creating a Docker Airflow Container <center>
 
 ```bash
 # Navigate to airflow dircetory
@@ -71,7 +71,7 @@ docker build -t airflow_image .
 docker run -d -P --name airflow_container -it airflow_image /bin/bash  --restart=always
 ```
 
-### Creating Docker Network
+### Create a Docker Network
 
 ```bash
 # Create a docker network and add the container to the network
@@ -83,15 +83,32 @@ docker network connect wave_network airflow_container
 docker network inspect wave_network
 ```
 
-### Attach to airflow_container
+### Attach to Airflow Container
 
 ```bash
 # Attach to the running airflow container
 docker attach airflow_container
 ```
 
-### Docker Set up Instructions
+### Testing Postgres
+
+```bash
+# Within the container, Connet to postgress database container via psql
+psql -h 172.19.0.1 -p 5432 -U postgres
+
+# Within the container, Connet to postgress database container via psql on your local machine
+psql -h localhost -p 54320 -U postgres
 ```
+
+
+### Create Airflow Metadatabase
+
+```bash
+# Within you container create an airflow meta-database
+airflow initdb
+```
+
+### Boot Up Script
 
 Start the scheduler and webserver into two seperate screens
 
@@ -100,28 +117,19 @@ Start the scheduler and webserver into two seperate screens
 source activate airflow
 && screen -d -m -S scheduler bash -c "airflow scheduler"
 && screen -d -m -S webserver bash -c "airflow webserver -p 8080"
-```
 
-```bash
 # See the open incoming ports for your docker container
  docker port airflow_container
 ```
 
 Look for the port mapping of port 8080 (i.e. `8080/tcp -> 0.0.0.0:32769`) Take the mapped port number and it to your airflow web server url.
 
-http://localhost:32769/admin/
+**Airflow Webserver:** http://localhost:32769/admin/
 
-### Build Airflow Image
 
-```bash
-# Connet to postgress database container via psql
-psql -h 172.18.0.1 -p 54320 -U postgres
+![Image](./Images/local_airflow.png)
 
-# Connet to postgress database container via psql on your local machine
-psql -h localhost -p 54320 -U postgres
-```
-
-#### Build Docker Network
+#### Removing Docker Container, Images, and Volumes
 
 Lets say your finished playing around with airflow. You can run the following docker commands to stop and remove your docker containers.
 
@@ -132,11 +140,8 @@ docker stop my_postgres
 docker rm my_postgres
 docker volume rm my_dbdata
 ```
-
-
-
-
-### Virtual Environment & Airflow Installation
+<br><br>
+## <center> Virtual Environment & Airflow Installation </center>
 
 Next we are going to setup a virtual environment for our airflow installation.
 
@@ -147,68 +152,10 @@ After install the environment, we will populate our meta-database, and start run
 
 I use [conda](https://www.anaconda.com/) as my package manager and virtual environments. Therefore I suggest that you install anaconda, virenv, or pyenv and following along. This tutorial will be using conda.
 
-1. Create a virtual environment using conda.
-
-```bash
-# Create a virtual environment
-conda create -n airflow python=3.6
-```
-
-2. Activate and enter your new virtual environment
-
-```bash
-# Activate the airflow environment
-source activate airflow
-```
-
-3. Install our python modules using pip. The requirements file can be found under the requirements folder within this repository
-
-```bash
-# Install the environment using pip and the requirements.txt file
-pip install -r requirements.txt
-```
-
-5. Set Conda Home environment Path
-
-```bash
-# Create an AIRFLOW_HOME environment variable that points to our airflow config file.
-# In my case I store this repository in the "/Users/kavi/repos/" on my Mac.
-export AIRFLOW_HOME="/Users/kavi/repos/airflow"
-```
-
-5. Populate the meta database by running the `airflow initdb` command
-
-```bash
-# Populate the meta database with the tables for the schedule and webserver
-airflow initdb
-```
-
-4. Start the Airflow web server.
-
-```bash
-# Start the airflow webserver
-airflow webserver -p 8080
-```
-
-5. Start the Airflow scheduler
-
-```bash
-# Start the schedule scheduler
-airflow scheduler -p 8080
-```
-
-6. Visit "http://localhost:8080/admin/" to view the Airflow Dashboard to run your DAGs. A user interface like the following should appear in your browser.
-
-![Image](./Images/local_airflow.png)
-
-### Running Airflow
-
 When you have airflow running it will start executing the airflow DAGs found under the `dags` subdirectory. There are a variety of light weight DAGs in this repository that have designed to uses a variety of airflow feature. I would highly suggest checking the out as Airflow executes.
 
-
-
-
-### <center> More About Airflow <center>
+<br><br>
+## <center> More About Airflow <center>
 
 Everything after this section is just bonus airflow content. Items that you don't necessarily need to run  this example but information that will helpful in getting out the most from airflow your needs.
 
@@ -224,9 +171,9 @@ Use this command to set a backfill dags to be completed without running it
 airflow backfill the_pipeline -s 2019-07-27 -e 2019-07-20 -m  --dry_run
 ```
 
-There will be time when I take the airflow scheduler down for testing and updates. When I start dhe scheduler up again I don't want it to start bacfill automatically because I don't ant it pining our API all the time.
+There will be time when I take the airflow scheduler down for testing and updates. When I start the scheduler up again I don't want it to start backfill automatically because I don't ant it pining our API all the time.
 
-Therefore I will use backfill to start populate the database a date range of "marked success fulljob."
+Therefore I will use backfill to start populate the database a date range of "marked success full job."
 
 ```bash
 airflow backfill the_mark_pipeline -s 2019-07-27 -e 2019-07-30 -m --verbose
