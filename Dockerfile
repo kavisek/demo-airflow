@@ -47,6 +47,9 @@ RUN sudo apt install nano
 RUN sudo apt-get install screen
 RUN sudo apt-get install lsof
 
+# Instal Git
+RUn sudo apt install git
+
 # Setting Airflow Enviroment Variable
 
 ENV AIRFLOW_HOME="/root"
