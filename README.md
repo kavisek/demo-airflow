@@ -80,7 +80,7 @@ docker network connect wave_network airflow_db
 docker network connect wave_network airflow_container
 
 # View network information
-docker network inspect my_network
+docker network inspect wave_network
 ```
 
 ### Attach to airflow_container
