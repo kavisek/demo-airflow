@@ -29,10 +29,11 @@ Start a postgres server within a docker container and creating a database called
 
 ```bash
 # Creating postgres docker container
-docker run -d --name my_postgres -v my_dbdata:/var/lib/postgresql/data -p 54320:5432 postgres:11
+docker run --rm  --name airflow_db -e POSTGRES_PASSWORD=docker -d -p 5432:5432 postgres
+--restart=always
 
 # Connect to the postgres database
-docker exec -it my_postgres psql -U postgres
+docker exec -it airflow_db psql -U postgres
 
 # Check the current version of Postgres
 SHOW server_version;
