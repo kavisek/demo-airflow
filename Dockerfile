@@ -48,7 +48,7 @@ RUN sudo apt-get install screen
 RUN sudo apt-get install lsof
 
 # Instal Git
-RUn sudo apt install git -y
+RUN sudo apt install git -y
 
 # Setting Airflow Enviroment Variable
 
