@@ -25,6 +25,7 @@
 *.tar
 .DS_Store
 *.log
+**/logs
 
 # Hide Folders
 # Ignore uploading log folders from airflow server to Github
