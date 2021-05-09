@@ -1,4 +1,5 @@
-# Ignore the Following Files
+# DATAFILES
+
 .DS_Store
 *.csv
 *.csv.gz
@@ -23,14 +24,12 @@
 *.pyo
 *.twbx
 *.tar
-.DS_Store
 *.log
-**/logs
 
-# Hide Folders
-# Ignore uploading log folders from airflow server to Github
-# since log files can grow larger than 100mb.
 
+
+
+# KEY FILES
 
 Keys/*
 SSL/*
@@ -39,14 +38,12 @@ airflow-webserver.pid
 __pycache__/
 
 
-# Hidden Folders
-Whitepapers
-Books
-Economics
-FlashCards
-BrainStation
-Kaggle
-Backups
+# IGNORNED FOLDERS
+logs/*
 
-# White List the Requirements folder
+# WHITELISTED FILES
+
 !requirements.txt
+
+
+# WHITELISTED FOLDERS
