@@ -44,7 +44,11 @@ k8_deploy_bairflow:
 	kubectl create namespace airflow
 	helm repo add bitnami https://charts.bitnami.com/bitnami
 	helm install my-release bitnami/airflow
+
+	# You will need to port forward the to access the webserver without a load balancer
 	kubectl port-forward --namespace airflow svc/my-release-airflow 8080:8080
+
+	# View the password your should use to access the database.
 	export AIRFLOW_PASSWORD=$(kubectl get secret --namespace "airflow" my-release-airflow -o jsonpath="{.data.airflow-password}" | base64 --decode)
 
 k8s_remove_bairflow:
