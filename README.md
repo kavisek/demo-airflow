@@ -47,6 +47,20 @@ You can now play around with Airflow features in a local environment.
 
 ## Kubernetes Startup
 
+The airflow team is currently working on a open-source helm deployment but it seems it is not ready. You can chek it out [here](https://github.com/apache/airflow/tree/master/chart). The best helm deployment I could find is this solution from [Bitnami](https://artifacthub.io/packages/helm/airflow-helm/airflow).
+
+```bash
+# Create airflow namespace
+kubectl create namespace airflow
+
+# Adding repo
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+# Install helm chart.
+helm install airflow bitnami/airflow
+```
+
+
 ### Sources
 
 - [Airflow in Docker](https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html)
