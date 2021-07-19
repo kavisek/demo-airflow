@@ -16,7 +16,7 @@ startup:
 ### Helm Deployment 
 k8s_context:	
 	# set k8s context as k8s
-	kubectl config use-context docker-for-desktop
+	kubectl config use-context docker-desktop
 
 
 k8s_remove: k8s_context
