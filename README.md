@@ -57,15 +57,16 @@ kubectl create namespace airflow
 helm repo add apache-airflow https://airflow.apache.org
 
 # Install helm chart.
-helm install airflow apache-airflow/airflow --namespace airflow
+kubectl create namespace airflow
+helm install airflow apache-airflow/airflow \
+--namespace airflow \
+--set webserver.livenessProbe.initialDelaySeconds=30
 ```
 
-If you would like to monitor the distribution of the pods. Feel free to check out this watch and kubectl for active monitoring.
-
+If you would like to monitor the distribution of the pods. Feel free to check out this watch and kubectl for active in-terminal monitoring.
 
 ```bash
-
-
+watch -n 30 kubectl get namespace,deployment,svc,po -A
 ```
 
 
