@@ -6,7 +6,7 @@ authors = ["kavi"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-apache-airflow = "^2.0.1"
+apache-airflow = "^2.4.1"
 
 [tool.poetry.dev-dependencies]
 
