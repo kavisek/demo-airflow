@@ -10,7 +10,10 @@ startup:
 	docker-compose up airflow-init
 	
 	# start all service, after initialization is complete.
-	docker-compose up
+	docker-compose up -d
+
+containers:
+	watch -n 2 docker container ls -a
 
 
 ### Helm Deployment 
