@@ -1,17 +1,17 @@
 import datetime
 
 import pendulum
+import sys
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
+sys.path.append("/opt/airflow/dags/module")
 
-def python_script() -> None:
-    print("Hello World")
-
+from module_tasks.core import ModuleTasks
 
 with DAG(
-    dag_id="python_dag",
+    dag_id="module_dag",
     schedule="0 0 * * *",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
@@ -19,9 +19,12 @@ with DAG(
     tags=["example", "example2"],
     params={"example_key": "example_value"},
 ) as dag:
+
+    module_tasks =  ModuleTasks()
+
     python_task = PythonOperator(
         task_id="python_task",
-        python_callable=lambda: python_script(),
+        python_callable=lambda: module_tasks.python_script(),
     )
 
 if __name__ == "__main__":
