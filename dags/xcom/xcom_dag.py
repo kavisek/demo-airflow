@@ -32,7 +32,7 @@ def retrieve_context(**context) -> None:
 
 
 with DAG(
-    dag_id="xcom_operator",
+    dag_id="xcom_dag",
     schedule="0 0 * * *",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,

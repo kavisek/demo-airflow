@@ -9,10 +9,10 @@ from airflow.operators.bash_operator import BashOperator
 # TODO: To get this dag working. You need to set up a`
 # postgres_default connection in the Airflow UI. Admin -> Connections -> Create
 
-# There is a scritp
+# Option: You can run the setup DAG. It will setup all the connections for you.
 
 with DAG(
-    dag_id="postgres_operator",
+    dag_id="postgres_dag",
     schedule="0 0 * * *",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,

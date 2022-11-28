@@ -3,15 +3,10 @@ import datetime
 import pendulum
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
-
-
-def python_srcipt() -> None:
-    print("Hello World")
-
+from airflow.operators.bash import BashOperator
 
 with DAG(
-    dag_id="python_operator",
+    dag_id="pip_dag",
     schedule="0 0 * * *",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
@@ -19,9 +14,11 @@ with DAG(
     tags=["example", "example2"],
     params={"example_key": "example_value"},
 ) as dag:
-    python_task = PythonOperator(
-        task_id="python_task",
-        python_callable=lambda: python_srcipt(),
+
+    # [START howto_operator_bash]
+    run_this = BashOperator(
+        task_id="running_pip_requirements",
+        bash_command="pip3 list",
     )
 
 if __name__ == "__main__":
