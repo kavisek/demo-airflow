@@ -1,6 +1,6 @@
 
 ### Docker-Compose Deployment
-startup:
+start:
 	# Take down services.
 	docker-compose down
 	
@@ -15,6 +15,8 @@ startup:
 containers:
 	watch -n 2 docker container ls -a
 
+exec:
+	docker exec -it airflow-dags-airflow-webserver-1 bash
 
 ### Helm Deployment 
 k8s_context:	
