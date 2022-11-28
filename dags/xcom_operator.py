@@ -10,14 +10,14 @@ from airflow.operators.python import PythonOperator
 
 def send_context(**context) -> None:
 
-    # We send the task context into the function. So we can 
+    # We send the task context into the function. So we can
     # retrieve the task instance and push the value into XCOM.
-    
+
     for key, value in context.items():
         print(f"{key}: {value}")
 
-    task_instance = context['task_instance']
-    task_instance.xcom_push(key='message', value="Hello World")
+    task_instance = context["task_instance"]
+    task_instance.xcom_push(key="message", value="Hello World")
 
 
 def retrieve_context(**context) -> None:
@@ -26,9 +26,10 @@ def retrieve_context(**context) -> None:
     # value is returned. I recommend using a dictionary to store multiple values
     # in XCOM in production code.
 
-    task_instance = context['task_instance']
-    xcom_value = task_instance.xcom_pull(task_ids='context_task', key="message")
-    print('xcom_value: ', xcom_value)
+    task_instance = context["task_instance"]
+    xcom_value = task_instance.xcom_pull(task_ids="context_task", key="message")
+    print("xcom_value: ", xcom_value)
+
 
 with DAG(
     dag_id="xcom_operator",
@@ -40,19 +41,18 @@ with DAG(
     params={"example_key": "example_value"},
 ) as dag:
 
-
     context_task = PythonOperator(
         task_id="context_task",
         provide_context=True,
         python_callable=send_context,
-        dag=dag
+        dag=dag,
     )
 
     retrieve_task = PythonOperator(
         task_id="retrieve_task",
         provide_context=True,
         python_callable=retrieve_context,
-        dag=dag
+        dag=dag,
     )
 
     context_task >> retrieve_task
