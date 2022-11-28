@@ -62,13 +62,13 @@ These are dags that I have written using best practises.
 - branch_dag: A dag that branch based on a task output.
 - datetime_dag: A dag that branch based on time.
 - postgres_dag: A dag that loads data into postgres.
-- custom_schedule_dag: A dag that runs on a predefined external schedule.
-- dag_factory_dag: An example of a dag factory.
+- custom_schedule_dag: A dag that runs on a predefined external schedule. (pending)
+- dag_factory_dag: An example of a dag factory using yaml.
 - templated dag: A dag that is template over multiple office locations.
-- sla_dag: A dag with a defined SLA.
+- sla_dag: A dag with a defined SLA. (pending)
 - sensor_dag: A dag that uses task sensors
 - xcom_dag: A dag that use xcom to pass variables.
-- pip_dag: A dag that export airflow pip requirements (sneaky).
+- pip_dag: A dag that export airflow pip requirements and sys paths (sneaky).
 
 
 ### Backfilling Commads

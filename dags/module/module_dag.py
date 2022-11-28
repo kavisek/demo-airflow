@@ -16,7 +16,7 @@ with DAG(
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
     dagrun_timeout=datetime.timedelta(minutes=60),
-    tags=["example", "example2"],
+    tags=["pipeline"],
     params={"example_key": "example_value"},
 ) as dag:
 
