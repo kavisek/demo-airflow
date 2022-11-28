@@ -9,7 +9,7 @@ from airflow.operators.bash_operator import BashOperator
 
 with DAG(
     dag_id="setup_dag",
-    schedule='@once',
+    schedule="@once",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
     dagrun_timeout=datetime.timedelta(minutes=60),
