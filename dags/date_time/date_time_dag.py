@@ -21,13 +21,13 @@ with DAG(
     params={"example_key": "example_value"},
 ) as dag:
 
-    empty_task_12 = EmptyOperator(task_id='date_in_range', dag=dag)
-    empty_task_22 = EmptyOperator(task_id='date_outside_range', dag=dag)
+    empty_task_12 = EmptyOperator(task_id="date_in_range", dag=dag)
+    empty_task_22 = EmptyOperator(task_id="date_outside_range", dag=dag)
 
     cond = BranchDateTimeOperator(
-        task_id='datetime_branch',
-        follow_task_ids_if_true=['date_in_range'],
-        follow_task_ids_if_false=['date_outside_range'],
+        task_id="datetime_branch",
+        follow_task_ids_if_true=["date_in_range"],
+        follow_task_ids_if_false=["date_outside_range"],
         target_upper=pendulum.time(0, 0, 0),
         target_lower=pendulum.time(15, 0, 0),
         dag=dag,

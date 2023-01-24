@@ -1,6 +1,4 @@
-
 class ModuleTasks:
-
     def __init__(self):
         pass
 

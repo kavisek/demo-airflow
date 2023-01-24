@@ -6,9 +6,12 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 # This dag will template over a set of offices locations.
+# This is how your can do basic iteration over pipelines.
+
 
 def python_script() -> None:
     print("Hello World")
+
 
 with DAG(
     dag_id="template_dag",

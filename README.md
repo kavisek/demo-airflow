@@ -27,6 +27,8 @@ The docker compose file for this quickstart is very similar to what is provided 
 
 - added a volume mount for the script directory.
 
+1. Start the docker-compose containers.
+
 ```bash
 # Start docker-compose via Makefile command.
 make startup
@@ -34,14 +36,19 @@ make startup
 
 The above command set up the postgres meta-datbase, webserver, scheduler, and workers. It may take a few moments for everything to initialize.
 
-Visit http://localhost:8080/ to interact with the webserver and the sample dags.
+2. Visit http://localhost:8080/ to interact with the webserver and the sample dags.
 
 username: airflow  
 password: airflow
 
 ![WebServer](/images/webserver.png)
 
+3. Turn on the "setup_dag" to set up the airflow connections.
+
 You can view running containers after startup.
+
+
+### Monitoring 
 
 ```bash
 # view the running containers

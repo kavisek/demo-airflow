@@ -9,7 +9,7 @@ from airflow.operators.bash_operator import BashOperator
 # TODO: To get this dag working. You need to set up a`
 # postgres_default connection in the Airflow UI. Admin -> Connections -> Create
 
-# Option: You can run the setup DAG. It will setup all the connections for you.
+# NOTE: You can run the "setup DAG". It will setup all the connections for you.
 
 with DAG(
     dag_id="postgres_dag",
@@ -27,7 +27,7 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=5),
         task_id="create_table",
         sql="""
-            CREATE TABLE IF NOT EXISTS example_table (
+            CREATE TABLE IF NOT EXISTS events (
                 id SERIAL PRIMARY KEY,
                 event_name VARCHAR(50) NOT NULL,
                 event_value INTEGER NOT NULL,
@@ -42,7 +42,7 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=5),
         task_id="populate_table",
         sql="""
-            INSERT INTO example_table (event_name, event_value, created_at) VALUES ('example', 1, NOW());
+            INSERT INTO events (event_name, event_value, created_at) VALUES ('example', 1, NOW());
             """,
     )
 
@@ -52,10 +52,11 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=5),
         task_id="get_table",
         sql="""
-            SELECT * FROM example_table;
+            SELECT * FROM events;
             """,
     )
 
+    create_table >> populate_table >> get_table
 
 if __name__ == "__main__":
     dag.cli()

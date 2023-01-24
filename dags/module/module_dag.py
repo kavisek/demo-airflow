@@ -20,7 +20,7 @@ with DAG(
     params={"example_key": "example_value"},
 ) as dag:
 
-    module_tasks =  ModuleTasks()
+    module_tasks = ModuleTasks()
 
     python_task = PythonOperator(
         task_id="python_task",

@@ -9,6 +9,7 @@ from airflow.utils.edgemodifier import Label
 from airflow.utils.trigger_rule import TriggerRule
 from airflow.operators.empty import EmptyOperator
 
+
 def python_script() -> None:
     print("Hello World")
 
@@ -23,7 +24,7 @@ with DAG(
     params={"example_key": "example_value"},
 ) as dag:
 
-    OPTIONS = ['branch_a', 'branch_b', 'branch_c', 'branch_d']
+    OPTIONS = ["branch_a", "branch_b", "branch_c", "branch_d"]
 
     python_task = PythonOperator(
         task_id="python_task",
@@ -31,7 +32,7 @@ with DAG(
     )
 
     branching_task = BranchPythonOperator(
-        task_id='branching',
+        task_id="branching",
         python_callable=lambda: random.choice(OPTIONS),
     )
 
