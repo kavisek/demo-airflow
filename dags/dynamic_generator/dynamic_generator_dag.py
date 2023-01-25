@@ -11,7 +11,7 @@ configs = {
 for config_name, config in configs.items():
     dag_id = f"dynamic_generated_dag_{config_name}"
 
-    @dag(dag_id=dag_id, start_date=datetime(2022, 2, 1))
+    @dag(dag_id=dag_id, start_date=datetime(2022, 2, 1), tags=["pipeline"],)
     def dynamic_generated_dag():
         @task
         def print_message(message):

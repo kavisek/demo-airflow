@@ -32,3 +32,12 @@ with DAG(
         }'
         """,
     )
+
+    create_variable = BashOperator(
+        task_id="create_variable",
+        bash_command="""
+        airflow variables set 'environment' 'local'
+        """,
+    )
+
+    create_connection >> create_variable
