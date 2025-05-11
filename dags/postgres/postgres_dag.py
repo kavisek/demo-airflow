@@ -1,12 +1,10 @@
-import datetime
-
+from datetime import datetime, timedelta
 import pendulum
 
 from airflow import DAG
-from airflow.operators.postgres_operator import PostgresOperator
-from airflow.operators.bash_operator import BashOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 
-# TODO: To get this dag working. You need to set up a`
+# TODO: To get this dag working. You need to set up a
 # postgres_default connection in the Airflow UI. Admin -> Connections -> Create
 
 # NOTE: You can run the "setup DAG". It will setup all the connections for you.
@@ -16,15 +14,15 @@ with DAG(
     schedule="0 0 * * *",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
-    dagrun_timeout=datetime.timedelta(minutes=60),
+    dagrun_timeout=timedelta(minutes=60),
     tags=["pipeline"],
     params={"example_key": "example_value"},
 ) as dag:
 
-    create_table = PostgresOperator(
-        postgres_conn_id="postgres_default",
+    create_table = SQLExecuteQueryOperator(
+        conn_id="postgres_default",
         retries=2,
-        retry_delay=datetime.timedelta(seconds=5),
+        retry_delay=timedelta(seconds=5),
         task_id="create_table",
         sql="""
             CREATE TABLE IF NOT EXISTS events (
@@ -36,20 +34,20 @@ with DAG(
             """,
     )
 
-    populate_table = PostgresOperator(
-        postgres_conn_id="postgres_default",
+    populate_table = SQLExecuteQueryOperator(
+        conn_id="postgres_default",
         retries=2,
-        retry_delay=datetime.timedelta(seconds=5),
+        retry_delay=timedelta(seconds=5),
         task_id="populate_table",
         sql="""
             INSERT INTO events (event_name, event_value, created_at) VALUES ('example', 1, NOW());
             """,
     )
 
-    get_table = PostgresOperator(
-        postgres_conn_id="postgres_default",
+    get_table = SQLExecuteQueryOperator(
+        conn_id="postgres_default",
         retries=2,
-        retry_delay=datetime.timedelta(seconds=5),
+        retry_delay=timedelta(seconds=5),
         task_id="get_table",
         sql="""
             SELECT * FROM events;

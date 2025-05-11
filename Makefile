@@ -1,16 +1,16 @@
 
-### Docker-Compose Deployment
+### docker compose Deployment
 start:
 	# Take down services.
-	docker-compose down
+	docker compose down
 	
 	# run database migrations and create the first user account
 	# Before starting Airflow for the first time, You need to prepare your environment, 
 	# i.e. create the necessary files, directories and initialize the database.
-	docker-compose up airflow-init
+	docker compose up airflow-init
 	
 	# start all service, after initialization is complete.
-	docker-compose up -d
+	docker compose up -d
 
 containers:
 	watch -n 2 docker container ls -a

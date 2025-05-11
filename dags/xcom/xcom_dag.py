@@ -1,7 +1,6 @@
 # This is a example of how to push and pull values from XCOM
 
-import datetime
-
+from datetime import datetime, timedelta
 import pendulum
 
 from airflow import DAG
@@ -36,23 +35,19 @@ with DAG(
     schedule="0 0 * * *",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
-    dagrun_timeout=datetime.timedelta(minutes=60),
+    dagrun_timeout=timedelta(minutes=60),
     tags=["pipeline"],
     params={"example_key": "example_value"},
 ) as dag:
 
     context_task = PythonOperator(
         task_id="context_task",
-        provide_context=True,
         python_callable=send_context,
-        dag=dag,
     )
 
     retrieve_task = PythonOperator(
         task_id="retrieve_task",
-        provide_context=True,
         python_callable=retrieve_context,
-        dag=dag,
     )
 
     context_task >> retrieve_task

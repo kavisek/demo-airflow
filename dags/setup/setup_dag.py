@@ -1,10 +1,8 @@
-import datetime
-
+from datetime import datetime, timedelta
 import pendulum
 
 from airflow import DAG
-from airflow.operators.postgres_operator import PostgresOperator
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.bash import BashOperator
 
 
 with DAG(
@@ -12,7 +10,7 @@ with DAG(
     schedule="@once",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
-    dagrun_timeout=datetime.timedelta(minutes=60),
+    dagrun_timeout=timedelta(minutes=60),
     tags=["pipeline"],
     params={"example_key": "example_value"},
 ) as dag:
