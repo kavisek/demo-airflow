@@ -4,7 +4,7 @@ import pendulum
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.models import Variable
+from airflow.sdk import Variable
 
 def python_script() -> None:
     # Get variables from the environment
