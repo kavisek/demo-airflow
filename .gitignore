@@ -48,3 +48,6 @@ logs/*
 
 
 # WHITELISTED FOLDERS
+
+.venv/
+.pytest_cache/

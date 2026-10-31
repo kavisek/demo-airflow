@@ -1,5 +1,5 @@
 
-.PHONY: start stop containers exec
+.PHONY: start stop test containers exec
 
 ### docker compose Deployment
 start:
@@ -17,6 +17,10 @@ start:
 stop:
 	# Stop and remove all services.
 	docker compose down
+
+test:
+	# Smoke-test the running deployment through the REST API.
+	AIRFLOW_URL=http://localhost:$${AIRFLOW_API_PORT:-8080} uv run pytest -v
 
 containers:
 	watch -n 2 docker container ls -a

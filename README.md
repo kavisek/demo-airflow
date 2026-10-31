@@ -54,6 +54,18 @@ make stop
 You can view running containers after startup.
 
 
+### Testing
+
+The tests in `tests/` smoke-test a running deployment through the REST API. They check the version and component health, check that every DAG parses, and trigger each DAG and wait for it to succeed. They need [uv](https://docs.astral.sh/uv/).
+
+```bash
+make start
+make test
+
+# Optionally assert the deployed version.
+EXPECTED_AIRFLOW_VERSION=3.3.2 make test
+```
+
 ### Monitoring 
 
 ```bash
