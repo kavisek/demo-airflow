@@ -14,6 +14,12 @@ start:
 	# start all service, after initialization is complete.
 	docker compose up -d
 
+	@echo ""
+	@echo "Airflow is starting up:"
+	@echo "  URL:      http://localhost:$${AIRFLOW_API_PORT:-8080}"
+	@echo "  Username: $${_AIRFLOW_WWW_USER_USERNAME:-airflow}"
+	@echo "  Password: $${_AIRFLOW_WWW_USER_PASSWORD:-airflow}"
+
 stop:
 	# Stop and remove all services.
 	docker compose down

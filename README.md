@@ -66,6 +66,16 @@ make test
 EXPECTED_AIRFLOW_VERSION=3.3.2 make test
 ```
 
+### Ports
+
+The API server and Postgres default to ports 8080 and 5432 on the host. If those ports are taken, override them for both `make start` and `make test`:
+
+```bash
+export AIRFLOW_API_PORT=8090 POSTGRES_PORT=5442
+make start
+make test
+```
+
 ### Monitoring 
 
 ```bash
