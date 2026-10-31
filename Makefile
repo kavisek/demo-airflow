@@ -15,10 +15,13 @@ start:
 	docker compose up -d
 
 	@echo ""
-	@echo "Airflow is starting up:"
-	@echo "  URL:      http://localhost:$${AIRFLOW_API_PORT:-8080}"
-	@echo "  Username: $${_AIRFLOW_WWW_USER_USERNAME:-airflow}"
-	@echo "  Password: $${_AIRFLOW_WWW_USER_PASSWORD:-airflow}"
+	@echo "Airflow is starting up. Services on the host:"
+	@echo "  Airflow UI / API: http://localhost:$${AIRFLOW_API_PORT:-8080}"
+	@echo "                    username $${_AIRFLOW_WWW_USER_USERNAME:-airflow}, password $${_AIRFLOW_WWW_USER_PASSWORD:-airflow}"
+	@echo "  Postgres:         localhost:$${POSTGRES_PORT:-5432}"
+	@echo "                    username airflow, password airflow, database airflow"
+	@echo "  Redis:            not published to the host (6379 inside the Docker network)"
+	@echo "  Flower:           http://localhost:5555 (only with: docker compose --profile flower up -d)"
 
 stop:
 	# Stop and remove all services.
