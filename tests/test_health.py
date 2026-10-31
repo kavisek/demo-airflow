@@ -3,6 +3,7 @@
 import os
 
 import pytest
+import requests
 
 COMPONENTS = ["metadatabase", "scheduler", "triggerer", "dag_processor"]
 
@@ -25,3 +26,11 @@ def test_component_healthy(api, component):
     assert response.json()[component]["status"] == "healthy"
 
 
+
+
+def test_api_needs_no_login():
+    # docker-compose.yml turns authentication off for this demo.
+    from conftest import AIRFLOW_URL
+
+    response = requests.get(f"{AIRFLOW_URL}/api/v2/dags", timeout=30)
+    assert response.status_code == 200

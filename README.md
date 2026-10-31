@@ -38,8 +38,7 @@ The above command set up the postgres meta-datbase, webserver, scheduler, and wo
 
 2. Visit http://localhost:8080/ to interact with the webserver and the sample dags.
 
-username: airflow  
-password: airflow
+Authentication is turned off for this demo, so there is no login page. Every request is treated as an admin. Don't run this setup anywhere other people can reach it.
 
 ![WebServer](/images/webserver.png)
 

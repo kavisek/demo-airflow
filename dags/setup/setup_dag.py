@@ -24,7 +24,6 @@ with DAG(
         bash_command="""
         curl -s -X POST "http://airflow-apiserver:8080/api/v2/connections" \
             -H "Content-Type: application/json" \
-            -u "airflow:airflow" \
             -d '{
                 "connection_id": "postgres_default",
                 "conn_type": "postgres",
@@ -43,7 +42,6 @@ with DAG(
         bash_command="""
         curl -s -X POST "http://airflow-apiserver:8080/api/v2/variables" \
             -H "Content-Type: application/json" \
-            -u "airflow:airflow" \
             -d '{
                 "key": "environment",
                 "value": "local"

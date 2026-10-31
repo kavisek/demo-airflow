@@ -17,7 +17,7 @@ start:
 	@echo ""
 	@echo "Airflow is starting up. Services on the host:"
 	@echo "  Airflow UI / API: http://localhost:$${AIRFLOW_API_PORT:-8080}"
-	@echo "                    username $${_AIRFLOW_WWW_USER_USERNAME:-airflow}, password $${_AIRFLOW_WWW_USER_PASSWORD:-airflow}"
+	@echo "                    no login needed (authentication is off)"
 	@echo "  Postgres:         localhost:$${POSTGRES_PORT:-5432}"
 	@echo "                    username airflow, password airflow, database airflow"
 	@echo "  Redis:            not published to the host (6379 inside the Docker network)"
