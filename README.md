@@ -31,7 +31,7 @@ The docker compose file for this quickstart is very similar to what is provided 
 
 ```bash
 # Start docker-compose via Makefile command.
-make startup
+make start
 ```
 
 The above command set up the postgres meta-datbase, webserver, scheduler, and workers. It may take a few moments for everything to initialize.
@@ -44,6 +44,12 @@ password: airflow
 ![WebServer](/images/webserver.png)
 
 3. Turn on the "setup_dag" to set up the airflow connections.
+
+4. Stop the docker-compose containers when you're done.
+
+```bash
+make stop
+```
 
 You can view running containers after startup.
 

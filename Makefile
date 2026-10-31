@@ -1,4 +1,6 @@
 
+.PHONY: start stop containers exec
+
 ### docker compose Deployment
 start:
 	# Take down services.
@@ -11,6 +13,10 @@ start:
 	
 	# start all service, after initialization is complete.
 	docker compose up -d
+
+stop:
+	# Stop and remove all services.
+	docker compose down
 
 containers:
 	watch -n 2 docker container ls -a
