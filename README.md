@@ -202,7 +202,7 @@ To stop and remove the containers, run the following command:
 make stop
 ```
 
-The metadata database is kept in the `demo-airflow_postgres-db-volume` Docker volume, so your DAG run history is still there the next time you run `make start`.
+The metadata database is kept in the `demo-airflow_postgres-18-db-volume` Docker volume, so your DAG run history is still there the next time you run `make start`.
 
 > **Caution:** The following command deletes the metadata database, including all DAG run history, connections, and variables.
 
@@ -227,6 +227,16 @@ To start over with an empty database, run the following commands:
 ```sh
 docker compose down -v
 make start
+```
+
+### DAG history is missing after the Postgres 18 upgrade
+
+The deployment moved from Postgres 13 to Postgres 18, which can't open Postgres 13 data. If you ran an earlier version of this repository, `make start` creates a new, empty database in the `demo-airflow_postgres-18-db-volume` volume, and your earlier DAG run history isn't shown. The old data stays in the `demo-airflow_postgres-db-volume` volume.
+
+If you don't need the old data, delete the old volume:
+
+```sh
+docker volume rm demo-airflow_postgres-db-volume
 ```
 
 ## Deploy on Kubernetes
