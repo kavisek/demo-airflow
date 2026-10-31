@@ -54,3 +54,7 @@ logs/*
 
 # Local environment and secret keys
 .env
+
+# Editor and assistant settings
+.vscode/
+.claude/
