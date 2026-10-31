@@ -1,171 +1,275 @@
-# Airflow and DAGs
+# Airflow demo with example DAGs
 
-This repo review how to run Airflow locally with a few examples of DAGs 
+This repository runs Apache Airflow 3.3.2 on your machine with Docker Compose and includes a set of example DAGs. Use it to learn how Airflow works: after you follow this guide, you have a local Airflow deployment, you can run and inspect each example DAG, and you can check the deployment with an automated test suite.
 
-In General, Apache Airflow is a like a crontab on steroids. Its a pipeline framework that can be used for ETL processing, training models, or any task that needs to be run at certain frequency. The framework allows you to run multiple jobs across different workers and specify dependencies. 
+## Overview
 
-There are few options on how to deploy Airflow.
+Apache Airflow is a workflow scheduler, like `cron` with dependencies, retries, and a web UI. You define pipelines as DAGs (directed acyclic graphs) of tasks in Python. Airflow runs them on a schedule and spreads the tasks across workers. Common uses are extract, transform, and load (ETL) jobs, model training, and any task that runs at a set frequency.
 
-docker-compose: great for local development
-kubernetes / helm: best for a production use case
-Cloud Virtual Machine: Not the stable but a very cheap alternative to most $1000 per month options.
+You can deploy Airflow in several ways:
 
-# Docker Startup
+| Option | Best for |
+|---|---|
+| Docker Compose | Local development. This repository uses it. |
+| Kubernetes with the Airflow Helm chart | Production. See [Deploy on Kubernetes](#deploy-on-kubernetes). |
+| A cloud virtual machine | Low-cost hosting. It's less stable, but cheaper than managed Airflow services, which can cost $1,000 or more per month. |
 
-I use `Makefile` a lot in my code to consolidate most of the docker-compose commands your need to run.  The following make command will provision the database, webserver, and scheduler locally for you. 
+The Docker Compose deployment runs the following services:
 
+- `airflow-apiserver`: the web UI and REST API.
+- `airflow-scheduler`: schedules DAG runs and queues tasks.
+- `airflow-dag-processor`: parses the files in `dags/`.
+- `airflow-worker`: a Celery worker that runs tasks.
+- `airflow-triggerer`: runs deferred tasks.
+- `postgres`: the metadata database.
+- `redis`: the Celery message broker.
 
-## Dependencies
+The `docker-compose.yml` file is based on the [official Airflow Docker Compose file](https://airflow.apache.org/docs/apache-airflow/3.3.2/docker-compose.yaml). It differs in the following ways:
 
-- make
-- watch
-- docker
+- The Airflow example DAGs are turned off, so you see only the DAGs in this repository.
+- Authentication is turned off, so the UI and API don't ask for a login.
+- New DAGs are unpaused when they're created, so scheduled DAGs start running right away.
+- The host ports and secret keys are configurable. See [Configure the deployment](#configure-the-deployment).
 
-## Quick Start
+> **Warning:** With authentication turned off, every request to the UI or API has admin access. Don't run this deployment on a machine or network that other people can reach.
 
-The docker compose file for this quickstart is very similar to what is provided by the airflow team. I have made the following modifications
+## Before you begin
 
-- added a volume mount for the script directory.
+Install the following tools:
 
-1. Start the docker-compose containers.
+- [Docker](https://docs.docker.com/get-docker/), with at least 4 GB of memory and 2 CPUs for Docker.
+- `make`.
+- `openssl`, which generates the secret keys.
+- [uv](https://docs.astral.sh/uv/), which runs the tests.
+- `watch`, for the `make containers` command.
 
-```bash
-# Start docker-compose via Makefile command.
+## Start Airflow
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/kavisek/demo-airflow.git
+   cd demo-airflow
+   ```
+
+1. Start the deployment:
+
+   ```sh
+   make start
+   ```
+
+   On the first run, the command creates a `.env` file with new secret keys. It then migrates the metadata database and starts every service. The first start takes several minutes because each service installs the extra Python packages listed in `_PIP_ADDITIONAL_REQUIREMENTS`.
+
+   When it finishes, the command prints the address of each service:
+
+   ```text
+   Airflow is starting up. Services on the host:
+     Airflow UI / API: http://localhost:8080
+                       no login needed (authentication is off)
+     Postgres:         localhost:5432
+                       username airflow, password airflow, database airflow
+     Redis:            not published to the host (6379 inside the Docker network)
+     Flower:           http://localhost:5555 (only with: docker compose --profile flower up -d)
+   ```
+
+1. Open the Airflow UI at `http://localhost:8080`.
+
+   The `setup_dag` DAG runs once on its own and creates the `postgres_default` connection and the `environment` variable.
+
+## Verify the deployment
+
+1. Check that every service is running and healthy:
+
+   ```sh
+   docker compose ps --format 'table {{.Service}}\t{{.Status}}\t{{.Ports}}'
+   ```
+
+   The output is similar to the following:
+
+   ```text
+   SERVICE                 STATUS                   PORTS
+   airflow-apiserver       Up 5 minutes (healthy)   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+   airflow-dag-processor   Up 5 minutes (healthy)   8080/tcp
+   airflow-scheduler       Up 5 minutes (healthy)   8080/tcp
+   airflow-triggerer       Up 5 minutes (healthy)   8080/tcp
+   airflow-worker          Up 5 minutes (healthy)   8080/tcp
+   postgres                Up 5 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+   redis                   Up 5 minutes (healthy)   6379/tcp
+   ```
+
+   To watch the containers refresh every 2 seconds, run `make containers`.
+
+1. Run the test suite:
+
+   ```sh
+   make test
+   ```
+
+   The tests in `tests/` call the REST API of the running deployment. They check the Airflow version and the health of each component, check that every DAG parses, trigger each DAG, and wait for each run to succeed. The output ends with a line similar to the following:
+
+   ```text
+   ============================= 25 passed in 38.63s ==============================
+   ```
+
+1. Optional: to also check the deployed Airflow version, set `EXPECTED_AIRFLOW_VERSION`:
+
+   ```sh
+   EXPECTED_AIRFLOW_VERSION=3.3.2 make test
+   ```
+
+## Explore the example DAGs
+
+The `dags/` folder contains the following DAGs. Unless noted, each DAG runs daily at 00:00 UTC.
+
+| DAG ID | What it shows |
+|---|---|
+| `bash_dag` | Bash commands with `BashOperator`, including a task that exits with code 99 to skip itself. |
+| `branching_dag` | Choosing one of four branches at random with `BranchPythonOperator`. |
+| `datetime_dag` | Branching on the time of day with `BranchDateTimeOperator`. |
+| `dynamic_generated_dag_config1` to `dynamic_generated_dag_config4` | Generating four DAGs from one file. These DAGs have no schedule. |
+| `global_variables_dag` | Reading the `environment` Airflow variable, which `docker-compose.yml` sets. |
+| `module_dag` | Importing task code from a local Python module in `dags/module/`. |
+| `pip_dag` | Printing the installed pip packages and the Python path. |
+| `postgres_dag` | Creating a Postgres table, inserting a row, and reading it back. |
+| `python_dag` | Running a Python function with `PythonOperator`. |
+| `random_dependency` | A random number of parallel tasks, from 2 to 5, chosen each time the file is parsed. |
+| `setup_dag` | Creating a connection and a variable through the REST API. Runs once. |
+| `template_dag` | Generating cleaning and processing tasks for five countries in a loop. |
+| `xcom_dag` | Passing a value between tasks with XCom. |
+
+The following examples aren't available yet:
+
+- `sensor_dag` and `sensor_trigger_dag`, which wait on another DAG with `ExternalTaskSensor`. The code is commented out.
+- A DAG factory that builds DAGs from YAML. The code in `dags/config_factory/` is commented out.
+- A DAG on a custom external schedule, and a DAG with a service level agreement (SLA). These are planned.
+
+## Configure the deployment
+
+### Change the host ports
+
+The API server uses port 8080 and Postgres uses port 5432 on your machine. If another program already uses either port, set different ports before you run `make start` and `make test`:
+
+```sh
+export AIRFLOW_API_PORT=API_PORT POSTGRES_PORT=POSTGRES_PORT
 make start
+make test
 ```
 
-The above command set up the postgres meta-datbase, webserver, scheduler, and workers. It may take a few moments for everything to initialize.
+Replace the following:
 
-2. Visit http://localhost:8080/ to interact with the webserver and the sample dags.
+- `API_PORT`: a free port for the Airflow UI and API, for example `8090`.
+- `POSTGRES_PORT`: a free port for Postgres, for example `5442`.
 
-Authentication is turned off for this demo, so there is no login page. Every request is treated as an admin. Don't run this setup anywhere other people can reach it.
+### Manage secret keys
 
-New DAGs are unpaused as soon as they are created, so scheduled DAGs start running right away.
+The first `make start` creates a `.env` file with a new Fernet key, API secret key, and JSON Web Token (JWT) secret. Git ignores `.env`, and each clone gets its own keys. The `.env.example` file lists the variables. To use your own values, create `.env` before you run `make start`.
 
-![WebServer](/images/webserver.png)
+The Fernet key encrypts connection passwords and variables in the metadata database. If you change it, Airflow can't decrypt the values it already stored. See [Connections page returns an error](#connections-page-returns-an-error).
 
-3. The "setup_dag" runs once on its own and sets up the Airflow connections.
+## Run common tasks
 
-4. Stop the docker-compose containers when you're done.
+To follow the scheduler logs, run the following command:
 
-```bash
+```sh
+docker compose logs -f airflow-scheduler
+```
+
+To open a shell in the scheduler container, run the following command:
+
+```sh
+docker compose exec airflow-scheduler bash
+```
+
+To create runs for past dates, use a backfill. The following command shows the runs it would create without creating them:
+
+```sh
+docker compose exec airflow-scheduler \
+  airflow backfill create --dag-id DAG_ID --from-date START_DATE --to-date END_DATE --dry-run
+```
+
+Replace the following:
+
+- `DAG_ID`: the DAG to backfill, for example `python_dag`.
+- `START_DATE` and `END_DATE`: the first and last dates of the range, for example `2026-10-01` and `2026-10-03`.
+
+To create the runs, run the command again without `--dry-run`. For more information, see [Backfill](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/backfill.html) in the Airflow documentation.
+
+## Clean up
+
+To stop and remove the containers, run the following command:
+
+```sh
 make stop
 ```
 
-You can view running containers after startup.
+The metadata database is kept in the `demo-airflow_postgres-db-volume` Docker volume, so your DAG run history is still there the next time you run `make start`.
 
+> **Caution:** The following command deletes the metadata database, including all DAG run history, connections, and variables.
 
-### Testing
+To remove the containers and the database, run the following command:
 
-The tests in `tests/` smoke-test a running deployment through the REST API. They check the version and component health, check that every DAG parses, and trigger each DAG and wait for it to succeed. They need [uv](https://docs.astral.sh/uv/).
+```sh
+docker compose down -v
+```
 
-```bash
+## Troubleshoot
+
+### Port is already allocated
+
+If `make start` fails with `port is already allocated`, another program is using port 8080 or 5432. Choose other ports as described in [Change the host ports](#change-the-host-ports).
+
+### Connections page returns an error
+
+If the **Connections** page or the `/api/v2/connections` endpoint returns an error, the database holds values encrypted with a different Fernet key. This happens if `.env` changed, or if the database was created by an older checkout of this repository, which had fixed keys. The `test_stored_secrets_decrypt` test fails in this case.
+
+To start over with an empty database, run the following commands:
+
+```sh
+docker compose down -v
 make start
-make test
-
-# Optionally assert the deployed version.
-EXPECTED_AIRFLOW_VERSION=3.3.2 make test
 ```
 
-### Ports
+## Deploy on Kubernetes
 
-The API server and Postgres default to ports 8080 and 5432 on the host. If those ports are taken, override them for both `make start` and `make test`:
+You can also deploy Airflow with the [Airflow Helm chart](https://airflow.apache.org/docs/helm-chart/stable/index.html):
 
-```bash
-export AIRFLOW_API_PORT=8090 POSTGRES_PORT=5442
-make start
-make test
-```
-
-### Monitoring 
-
-```bash
-# view the running containers
-make containers
-```
-
-![Containers](/images/running_containers.png)
-
-
-### DAG Samples
-
-I remove all template example dags from Airflow local deployment, and loaded my own examples. 
-
-These are dags that I have written using best practises.
-
-- python_operator: A dag that run python script.
-- bash_dag: A dag that run bash script.
-- branch_dag: A dag that branch based on a task output.
-- datetime_dag: A dag that branch based on time.
-- postgres_dag: A dag that loads data into postgres.
-- custom_schedule_dag: A dag that runs on a predefined external schedule. (pending)
-- dag_factory_dag: An example of a dag factory using yaml.
-- templated dag: A dag that is template over multiple office locations.
-- sla_dag: A dag with a defined SLA. (pending)
-- sensor_dag: A dag that uses task sensors
-- xcom_dag: A dag that use xcom to pass variables.
-- pip_dag: A dag that export airflow pip requirements and sys paths (sneaky).
-
-
-### Backfilling Commads
-
-```
-# View Scheduler Logs
-docker logs airflow-dags-airflow-scheduler-1
-
-# Bash into Airflow scheduler
-docker exec -it airflow-dags-airflow-webserver-1 /bin/bash
-
-# Backfill 
-
-```
-
-
-### Airflow Best Practises
-
-### Experimentation
-
-You can now play around with Airflow features in a local environment.
-
-- Build DAGs
-- Install Plugins
-- Setup Connections
-- Monitor Jobs
-
-## Kubernetes Startup
-
-This setup is using the [Airflow Helm distribution for Kubernetes](https://airflow.apache.org/docs/helm-chart/stable/index.html).
-
-```bash
-# Create airflow namespace
+```sh
 kubectl create namespace airflow
-
-# Adding repo
 helm repo add apache-airflow https://airflow.apache.org
-
-# Install helm chart.
-kubectl create namespace airflow
 helm install airflow apache-airflow/airflow \
---namespace airflow \
---set webserver.livenessProbe.initialDelaySeconds=30
+  --namespace airflow \
+  --set webserver.livenessProbe.initialDelaySeconds=30
 ```
 
-If you would like to monitor the distribution of the pods. Feel free to check out this watch and kubectl for active in-terminal monitoring.
+To watch the pods start, run the following command:
 
-```bash
+```sh
 watch -n 30 kubectl get namespace,deployment,svc,po -A
 ```
 
-<br></br><center>
-![Airflow Diagram](https://www.xenonstack.com/images/insights/xenonstack-what-is-apache-airflow.png)
+## What's next
 
-### Sources
+With the deployment running, you can try the following:
 
-- [Airflow in Docker](https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html)
-- [Airflow Helm](https://github.com/apache/airflow/tree/master/chart)
-- [Airflow in Breeze](https://github.com/apache/airflow/blob/master/BREEZE.rst)
-- [Airflow Documentation](https://airflow.apache.org/)
-- [Postgres Docker Container Setup](https://www.saltycrane.com/blog/2019/01/how-run-postgresql-docker-mac-local-development///)
-- [Postgres Connection String](https://airflow.apache.org/howto/connection/postgres.html)
-- [Installing Helm Chart](http://apache-airflow-docs.s3-website.eu-central-1.amazonaws.com/docs/helm-chart/latest/index.html)
-- [Airflow Docker Compose](https://airflow.apache.org/docs/apache-airflow/2.4.3/docker-compose.yaml)
+- Write your own DAGs in `dags/`. The DAG processor picks up new files automatically.
+- Install plugins in `plugins/`.
+- Add connections in the UI under **Admin** > **Connections**.
+- Monitor DAG runs and task logs in the UI.
+
+To learn more, see the following resources:
+
+- [Running Airflow in Docker](https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html)
+- [Airflow documentation](https://airflow.apache.org/)
+- [Airflow best practices](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html)
+- [Postgres connection](https://airflow.apache.org/howto/connection/postgres.html)
+- [Airflow Helm chart source](https://github.com/apache/airflow/tree/master/chart)
+- [Airflow Breeze development environment](https://github.com/apache/airflow/blob/master/BREEZE.rst)
+- [Run PostgreSQL in Docker on a Mac for local development](https://www.saltycrane.com/blog/2019/01/how-run-postgresql-docker-mac-local-development///)
+
+## Contributing
+
+Contributions are welcome. For setup and the pull request process, see [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). To report a security problem, follow [SECURITY.md](SECURITY.md).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
