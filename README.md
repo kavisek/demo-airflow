@@ -40,9 +40,11 @@ The above command set up the postgres meta-datbase, webserver, scheduler, and wo
 
 Authentication is turned off for this demo, so there is no login page. Every request is treated as an admin. Don't run this setup anywhere other people can reach it.
 
+New DAGs are unpaused as soon as they are created, so scheduled DAGs start running right away.
+
 ![WebServer](/images/webserver.png)
 
-3. Turn on the "setup_dag" to set up the airflow connections.
+3. The "setup_dag" runs once on its own and sets up the Airflow connections.
 
 4. Stop the docker-compose containers when you're done.
 
