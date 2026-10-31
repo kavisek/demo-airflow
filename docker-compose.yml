@@ -103,7 +103,10 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
     volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
+      # Postgres 18 images keep data under /var/lib/postgresql/18/docker, so mount the
+      # parent directory. Postgres 13 data can't be opened by 18, so this is a new
+      # volume; an old postgres-db-volume is left untouched.
+      - postgres-18-db-volume:/var/lib/postgresql
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
@@ -379,7 +382,7 @@ services:
         condition: service_completed_successfully
 
 volumes:
-  postgres-db-volume:
+  postgres-18-db-volume:
 
 networks:
   network:
