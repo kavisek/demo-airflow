@@ -3,6 +3,7 @@ name = "demo-airflow"
 version = "0.1.0"
 description = "Demo Airflow environment and its smoke tests."
 requires-python = ">=3.11"
+license = "MIT"
 dependencies = []
 
 [dependency-groups]
