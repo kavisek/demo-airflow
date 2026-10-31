@@ -51,3 +51,6 @@ logs/*
 
 .venv/
 .pytest_cache/
+
+# Local environment and secret keys
+.env

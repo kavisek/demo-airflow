@@ -31,6 +31,10 @@
 #                                Default: .
 # Those configurations are useful mostly in case of standalone testing/running Airflow in test/try-out mode
 #
+# AIRFLOW_FERNET_KEY,          - Secret keys for this deployment. `make start` generates them into .env
+# AIRFLOW_API_SECRET_KEY,        on the first run. Required; there are no defaults.
+# AIRFLOW_JWT_SECRET
+#
 # _PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting all containers.
 #                                Use this option ONLY for quick checks. Installing requirements at container
 #                                startup is done EVERY TIME the service is started.
@@ -56,13 +60,13 @@ x-airflow-common:
     # Never use this on a machine or network other people can reach.
     AIRFLOW__CORE__AUTH_MANAGER: airflow.api_fastapi.auth.managers.simple.simple_auth_manager.SimpleAuthManager
     AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: 'true'
-    AIRFLOW__SIMPLE_AUTH_MANAGER__JWT_SECRET_KEY: 'your-super-secret-jwt-key-change-in-production'
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
-    AIRFLOW__CORE__FERNET_KEY: 'MqOS2YyDSFlb2fUlcAlzCM7DV7w6C4YMPoFfNKItnYc='
-    AIRFLOW__API__SECRET_KEY: 'di0FYZv1j8YQfMX15lTIjM2sD2o_iFW_DoPECB6KkCM'
-    AIRFLOW__API_AUTH__JWT_SECRET: '_tCJCj0Om613qL1T3JRWAkVJMzpa13Al2oVCNXqTXZA'
+    # Secret keys are generated per clone into .env by `make start` (see .env.example).
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:?AIRFLOW_FERNET_KEY is not set. Run make start to generate .env}
+    AIRFLOW__API__SECRET_KEY: ${AIRFLOW_API_SECRET_KEY:?AIRFLOW_API_SECRET_KEY is not set. Run make start to generate .env}
+    AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW_JWT_SECRET:?AIRFLOW_JWT_SECRET is not set. Run make start to generate .env}
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'

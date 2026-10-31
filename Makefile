@@ -2,7 +2,17 @@
 .PHONY: start stop test containers exec
 
 ### docker compose Deployment
-start:
+.env:
+	# Generate a .env with fresh secret keys for this clone. It is git-ignored.
+	@{ \
+		echo "AIRFLOW_UID=50000"; \
+		echo "AIRFLOW_FERNET_KEY=$$(openssl rand -base64 32 | tr '+/' '-_')"; \
+		echo "AIRFLOW_API_SECRET_KEY=$$(openssl rand -hex 32)"; \
+		echo "AIRFLOW_JWT_SECRET=$$(openssl rand -hex 32)"; \
+	} > .env
+	@echo "Created .env with new secret keys."
+
+start: .env
 	# Take down services.
 	docker compose down
 	
@@ -23,7 +33,7 @@ start:
 	@echo "  Redis:            not published to the host (6379 inside the Docker network)"
 	@echo "  Flower:           http://localhost:5555 (only with: docker compose --profile flower up -d)"
 
-stop:
+stop: .env
 	# Stop and remove all services.
 	docker compose down
 

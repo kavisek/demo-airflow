@@ -34,3 +34,12 @@ def test_api_needs_no_login():
 
     response = requests.get(f"{AIRFLOW_URL}/api/v2/dags", timeout=30)
     assert response.status_code == 200
+
+
+def test_stored_secrets_decrypt(api):
+    # Connections are encrypted with AIRFLOW_FERNET_KEY. A 500 here means the
+    # database holds values encrypted with a different key (see README).
+    response = api.get("/connections")
+    assert response.status_code == 200, response.text
+    response = api.get("/variables")
+    assert response.status_code == 200, response.text
